@@ -13,30 +13,78 @@ import Header from "../components/Header";
 import InputBox from "../components/InputBox";
 import ItemList from "../components/ItemList";
 import { Item } from "../types";
+import { Feather } from "@expo/vector-icons";
 
 export default function Screen() {
-	const [lists, setLists] = useState<Item[] | undefined>([
-		{ id: uuidv4(), name: "fasdfadsf" },
-		{ id: uuidv4(), name: "fasdfa" },
-		{ id: uuidv4(), name: "fadsfa" },
-		{ id: uuidv4(), name: "fadsfa" },
-		{ id: uuidv4(), name: "fadsfa" },
-		{ id: uuidv4(), name: "fadsfa" },
-		{ id: uuidv4(), name: "fadsfa" },
-	]);
+	const [lists, setLists] = useState<Item[] | undefined>([]);
+	console.log(lists);
 
 	const putLists = (text: string) => {
-		setLists((prevItem: any) => {
-			return [{ id: uuidv4(), name: text }, ...prevItem];
+		setLists((prevItem: any): Item[] => {
+			return [
+				{ id: uuidv4(), name: text, completed: false },
+				...prevItem,
+			];
 		});
+	};
+
+	const completeHandler = (id: string) => {
+		setLists(
+			lists?.map((list) => {
+				if (list.id === id) {
+					return { ...list, completed: !list.completed };
+				}
+				return list;
+			})
+		);
+	};
+
+	const deleteHandler = () => {
+		setLists(
+			lists?.filter((list) => {
+				if (list.completed === true) {
+					return;
+				} else {
+					return list;
+				}
+			})
+		);
+	};
+	const makeAllTrue = () => {
+		setLists(
+			lists?.map((list) => {
+				if (list.completed === false) {
+					return { ...list, completed: true };
+				} else {
+					return list;
+				}
+			})
+		);
+	};
+	const makeAllFalse = () => {
+		setLists(
+			lists?.map((list) => {
+				if (list.completed === true) {
+					return { ...list, completed: false };
+				} else {
+					return list;
+				}
+			})
+		);
 	};
 	return (
 		<KeyboardAvoidingView behavior='padding' style={styles.container}>
-			<Header />
+			<Header
+				makeAllTrue={makeAllTrue}
+				makeAllFalse={makeAllFalse}
+				deleteHandler={deleteHandler}
+			/>
 			<FlatList
 				data={lists}
 				keyExtractor={(item) => item.id}
-				renderItem={({ item }) => <ItemList item={item} />}
+				renderItem={({ item }) => (
+					<ItemList completeHandler={completeHandler} item={item} />
+				)}
 			/>
 			<InputBox putList={putLists} />
 			<StatusBar style='auto' />

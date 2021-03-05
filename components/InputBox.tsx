@@ -26,11 +26,14 @@ export type InputBoxProps = {
 	putList: (text: string) => void;
 };
 const InputBox = (props: InputBoxProps) => {
-	const [input, setInput] = useState<string | undefined>("");
+	const { putList } = props;
+	const [input, setInput] = useState<string>("");
 
 	const onPress = () => {
-		props.putList("asfa");
-		// setInput("");
+		if (input !== "") {
+			putList(input);
+			setInput("");
+		}
 	};
 	return (
 		<View style={styles.container}>
@@ -65,7 +68,7 @@ const styles = StyleSheet.create({
 	mainContainer: {
 		flexDirection: "row",
 		backgroundColor: "white",
-		padding: 10,
+		paddingVertical: 10,
 		margin: 10,
 		borderRadius: 10,
 		// marginRight: 10,

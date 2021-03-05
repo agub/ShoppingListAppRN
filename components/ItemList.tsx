@@ -1,28 +1,55 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import Colors from "../constants/Colors";
 import { Item } from "../types";
 import { Feather } from "@expo/vector-icons";
 
 export type ItemListProps = {
 	item: Item;
+	completeHandler: (id: string) => void;
 };
 const ItemList = (props: ItemListProps) => {
-	const { item } = props;
+	const { item, completeHandler } = props;
+	const onPress = () => {
+		console.log(item.id);
+		completeHandler(item.id);
+	};
+
 	return (
-		<View style={styles.container}>
+		<TouchableOpacity style={styles.container} onPress={onPress}>
 			<View style={styles.checkIcon}>
-				<Feather name='square' color='red' size={24} />
+				{item.completed ? (
+					<Feather
+						name='check-square'
+						color={Colors.light.secondaryColor}
+						size={24}
+					/>
+				) : (
+					<Feather name='square' color='red' size={24} />
+				)}
 			</View>
-			<Text style={styles.itemList}>{item.name}</Text>
-		</View>
+			<Text
+				style={[
+					styles.itemList,
+					{
+						textDecorationLine: item.completed
+							? "line-through"
+							: "none",
+						fontWeight: item.completed ? "normal" : "bold",
+					},
+				]}
+			>
+				{item.name}
+			</Text>
+		</TouchableOpacity>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
 		flexDirection: "row",
-		padding: 10,
+		paddingVertical: 12,
+		paddingHorizontal: 20,
 		alignItems: "center",
 		flex: 1,
 	},
@@ -36,6 +63,8 @@ const styles = StyleSheet.create({
 	itemList: {
 		paddingHorizontal: 20,
 		fontSize: 20,
+		fontWeight: "bold",
+		textDecorationStyle: "double",
 	},
 	checkIcon: {},
 	addIcon: {
