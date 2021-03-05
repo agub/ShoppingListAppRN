@@ -15,16 +15,22 @@ import {
 	StyleSheet,
 } from "react-native";
 import Colors from "../constants/Colors";
+import { Item } from "../types";
 
-const InputBox = () => {
-	const [message, setMessage] = useState("");
+// export type InputBoxProps = {
+// 	// setLists(): (text: string) => void;
+// 	setLists(text: string): { id: string; name: string };
+// };
+export type InputBoxProps = {
+	// setLists(): (text: string) => void;
+	putList: (text: string) => void;
+};
+const InputBox = (props: InputBoxProps) => {
+	const [input, setInput] = useState<string | undefined>("");
 
 	const onPress = () => {
-		if (!message) {
-			console.warn("Recording button has fired");
-		} else {
-			console.warn("Send button had fired!!");
-		}
+		props.putList("asfa");
+		// setInput("");
 	};
 	return (
 		<View style={styles.container}>
@@ -32,8 +38,11 @@ const InputBox = () => {
 				<TextInput
 					style={styles.TextInput}
 					multiline
+					onChangeText={setInput}
+					value={input}
 					returnKeyType='next'
 					placeholder={"Type something!"}
+
 					// numberOfLines={2}
 				/>
 			</View>
