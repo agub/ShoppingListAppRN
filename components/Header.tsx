@@ -2,12 +2,10 @@ import React, { useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import Colors from "../constants/Colors";
 import { FontAwesome5, AntDesign, MaterialIcons } from "@expo/vector-icons";
-import { Item } from "../types";
 
 export type HeaderProps = {
 	deleteHandler: () => void;
-	makeAllFalse: () => void;
-	makeAllTrue: () => void;
+
 	editingHandler: () => void;
 	isEditing: boolean;
 };
@@ -15,8 +13,7 @@ export type HeaderProps = {
 const Header = (props: HeaderProps) => {
 	const {
 		deleteHandler,
-		makeAllFalse,
-		makeAllTrue,
+
 		editingHandler,
 		isEditing,
 	} = props;
@@ -26,28 +23,23 @@ const Header = (props: HeaderProps) => {
 		editingHandler();
 	};
 	const addDeleteHandler = () => {
-		// onPress();
 		deleteHandler();
 	};
 	return (
 		<View style={styles.container}>
 			<TouchableOpacity style={styles.icon} onPress={onPress}>
 				{isEditing ? (
-					// <MaterialIcons
-					// 	name='playlist-add-check'
-					// 	color={Colors.light.secondaryColor}
-					// 	size={30}
-					<Text style={styles.text}>Done</Text>
+					<MaterialIcons
+						name='playlist-add-check'
+						color={Colors.light.secondaryColor}
+						size={32}
+					/>
 				) : (
-					// />
-
-					<Text style={styles.text}>Edit</Text>
-					// <MaterialIcons
-					// 	name='indeterminate-check-box'
-					// 	color='red'
-					// 	size={30}
-					// />
-					// <Text style={styles.text}>選択解除</Text>
+					<MaterialIcons
+						name='indeterminate-check-box'
+						color='white'
+						size={30}
+					/>
 				)}
 			</TouchableOpacity>
 			<Text style={styles.text}>リスト</Text>
@@ -73,7 +65,7 @@ const styles = StyleSheet.create({
 		paddingVertical: 11,
 	},
 	icon: {
-		marginHorizontal: 18,
+		marginHorizontal: 22,
 	},
 });
 

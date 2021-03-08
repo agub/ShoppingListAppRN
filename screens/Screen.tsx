@@ -1,33 +1,32 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
-import {
-	StyleSheet,
-	Text,
-	View,
-	FlatList,
-	ScrollView,
-	KeyboardAvoidingView,
-} from "react-native";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, FlatList, KeyboardAvoidingView } from "react-native";
 import { v4 as uuidv4 } from "uuid";
 import Header from "../components/Header";
 import InputBox from "../components/InputBox";
 import ItemList from "../components/ItemList";
 import { Item } from "../types";
-import { Feather, MaterialIcons } from "@expo/vector-icons";
 
 export default function Screen() {
 	const [lists, setLists] = useState<Item[]>([]);
 	const [isEditing, setIsEditing] = useState(false);
-	// console.log(lists);
+	const [index, setIndex] = useState(0);
 
 	const putLists = (text: string) => {
 		setLists((prevItem: any): Item[] => {
 			return [
-				{ id: uuidv4(), name: text, completed: false },
+				{
+					id: uuidv4(),
+					name: text,
+					completed: false,
+					index: lists.length,
+				},
 				...prevItem,
 			];
 		});
+		// setIndex((index) => index + 1);
 	};
+	// console.log(lists);
 
 	const completeHandler = (id: string) => {
 		setLists(
@@ -51,30 +50,17 @@ export default function Screen() {
 			})
 		);
 	};
-	const makeAllTrue = () => {
-		setLists(
-			lists?.map((list) => {
-				if (list.completed === false) {
-					return { ...list, completed: true };
-				} else {
-					return list;
-				}
-			})
-		);
-	};
-	const makeAllFalse = () => {
-		setLists(
-			lists?.map((list) => {
-				if (list.completed === true) {
-					return { ...list, completed: false };
-				} else {
-					return list;
-				}
-			})
-		);
-	};
+
 	const selectedDeleteHandler = (id: string) => {
-		console.warn(id);
+		setLists(
+			lists?.filter((list) => {
+				if (list.id === id) {
+					return;
+				} else {
+					return list;
+				}
+			})
+		);
 	};
 
 	const editingHandler = () => {
@@ -85,17 +71,20 @@ export default function Screen() {
 		}
 	};
 
+	useEffect(() => {
+		if (lists.length < 1) {
+			setIsEditing(false);
+		}
+	}, [lists]);
+
 	return (
 		<KeyboardAvoidingView behavior='padding' style={styles.container}>
 			<Header
-				makeAllTrue={makeAllTrue}
-				makeAllFalse={makeAllFalse}
 				deleteHandler={deleteHandler}
 				editingHandler={editingHandler}
 				isEditing={isEditing}
 			/>
 			<InputBox putList={putLists} />
-			{/* <MaterialIcons name='add' size={24} color='black' /> */}
 			<FlatList
 				data={lists}
 				keyExtractor={(item) => item.id}
@@ -108,7 +97,7 @@ export default function Screen() {
 					/>
 				)}
 			/>
-			{/* <InputBox putList={putLists} /> */}
+
 			<StatusBar style='auto' />
 		</KeyboardAvoidingView>
 	);

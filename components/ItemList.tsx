@@ -1,86 +1,150 @@
-import React, { useState } from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import React, { FC, useState } from "react";
+import {
+	StyleSheet,
+	Text,
+	View,
+	TouchableOpacity,
+	Animated,
+	Easing,
+} from "react-native";
 import Colors from "../constants/Colors";
 import { Item } from "../types";
 import { Feather, AntDesign } from "@expo/vector-icons";
 
 export type ItemListProps = {
+	item: Item;
 	isEditing: boolean;
 	completeHandler: (id: string) => void;
 	selectedDeleteHandler: (id: string) => void;
-	item: Item;
 };
 const ItemList = (props: ItemListProps) => {
 	const { item, completeHandler, isEditing, selectedDeleteHandler } = props;
 
-	const [showDelete, isShowDelete] = useState(false);
+	const [showDelete, setShowDelete] = useState(false);
+
+	//------functions----------
 	const onPress = () => {
-		if (isEditing) {
-			console.warn("disable delete");
-			isShowDelete(!showDelete);
+		if (isEditing && showDelete) {
+			setShowDelete(!showDelete);
 		} else {
-			console.log(item.id);
 			completeHandler(item.id);
 		}
 	};
 
 	const showDeleteHandler = () => {
-		isShowDelete(!showDelete);
+		setShowDelete(!showDelete);
 	};
 
 	const selectedId = () => {
 		selectedDeleteHandler(item.id);
 	};
 
+	// const onUpwards = () => {
+	// 	upwardsHandler(item.index);
+	// 	console.log(item.index);
+	// };
+
+	// const SortsComponent: FC = (): JSX.Element => {
+	// 	return (
+	// 		<>
+	// 			{/* {isEditing && !showDelete && ( */}
+	// 			<View
+	// 				style={{
+	// 					flexDirection: "row",
+	// 					// marginLeft: "auto",
+	// 					justifyContent: "flex-end",
+	// 					// width: "100%",
+	// 					// flex: 1,
+	// 				}}
+	// 			>
+	// 				<TouchableOpacity onPress={onUpwards}>
+	// 					<AntDesign
+	// 						name='up'
+	// 						color={Colors.light.primaryColor}
+	// 						size={23}
+	// 					/>
+	// 				</TouchableOpacity>
+	// 				<TouchableOpacity>
+	// 					<AntDesign
+	// 						name='down'
+	// 						color={Colors.light.primaryColor}
+	// 						size={23}
+	// 					/>
+	// 				</TouchableOpacity>
+	// 			</View>
+	// 			{/* )} */}
+	// 		</>
+	// 	);
+	// };
+
+	//---------Animation-------
+	const spinValue = new Animated.Value(0);
+
+	Animated.timing(spinValue, {
+		toValue: 1,
+		duration: 200,
+		easing: Easing.linear,
+		useNativeDriver: true,
+	}).start();
+
+	const spin = spinValue.interpolate({
+		inputRange: [0, 1],
+		outputRange: [0, -70],
+	});
+
+	//----------------
+
 	return (
-		<View
+		<Animated.View
 			style={[
 				styles.main,
 				{
 					transform:
 						showDelete && isEditing
-							? [{ translateX: -70 }]
+							? [{ translateX: spin }]
 							: [{ translateX: 0 }],
 				},
 			]}
 		>
-			<View style={styles.container}>
+			<TouchableOpacity style={styles.container} onPress={onPress}>
 				{isEditing && (
-					<AntDesign
-						name='minuscircle'
-						color='red'
-						size={24}
-						style={{ paddingRight: 20 }}
-						onPress={showDeleteHandler}
-					/>
-				)}
-				<TouchableOpacity style={styles.midContainer} onPress={onPress}>
-					<View style={styles.checkIcon}>
-						{item.completed ? (
-							<Feather
-								name='check-square'
-								color={Colors.light.secondaryColor}
-								size={24}
-							/>
-						) : (
-							<Feather name='square' color='red' size={24} />
-						)}
+					<View style={{ flexDirection: "row" }}>
+						<AntDesign
+							name='minuscircle'
+							color='red'
+							size={24}
+							style={{ paddingRight: 20 }}
+							onPress={showDeleteHandler}
+						/>
 					</View>
-					<Text
-						style={[
-							styles.itemList,
-							{
-								textDecorationLine: item.completed
-									? "line-through"
-									: "none",
-								fontWeight: item.completed ? "normal" : "bold",
-							},
-						]}
-					>
-						{item.name}
-					</Text>
-				</TouchableOpacity>
-			</View>
+				)}
+				{/* {!isEditing && ( */}
+				<View style={styles.checkIcon}>
+					{item.completed ? (
+						<Feather
+							name='check-square'
+							color={Colors.light.secondaryColor}
+							size={24}
+						/>
+					) : (
+						<Feather name='square' color='red' size={24} />
+					)}
+				</View>
+				{/* )} */}
+				<Text
+					style={[
+						styles.itemList,
+						{
+							textDecorationLine: item.completed
+								? "line-through"
+								: "none",
+							fontWeight: item.completed ? "normal" : "bold",
+						},
+					]}
+				>
+					{item.name}
+				</Text>
+			</TouchableOpacity>
 			{showDelete && isEditing && (
 				<TouchableOpacity
 					style={styles.deleteButton}
@@ -89,7 +153,7 @@ const ItemList = (props: ItemListProps) => {
 					<Text style={styles.deleteText}>Delete</Text>
 				</TouchableOpacity>
 			)}
-		</View>
+		</Animated.View>
 	);
 };
 
@@ -102,17 +166,11 @@ const styles = StyleSheet.create({
 		// paddingVertical: 12,
 		backgroundColor: "#f2f2f2",
 		width: "100%",
-		paddingLeft: 20,
+		paddingLeft: 25,
 		alignItems: "center",
 		borderBottomColor: "white",
 		borderBottomWidth: 2,
-	},
-	midContainer: {
-		flexDirection: "row",
 		paddingVertical: 12,
-		alignItems: "center",
-		// paddingHorizontal: 20,
-		// flex: 1,
 	},
 	addsContainer: {
 		padding: 20,
@@ -124,6 +182,7 @@ const styles = StyleSheet.create({
 	itemList: {
 		paddingHorizontal: 20,
 		fontSize: 20,
+		// width: "asu",
 		fontWeight: "bold",
 		textDecorationStyle: "double",
 	},
