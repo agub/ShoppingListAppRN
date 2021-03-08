@@ -1,3 +1,3 @@
 # ShoppingListAppRN
 
-url: https://expo.io/@shintrfc/projects/ShoppingListTs-RN
+expo link: https://expo.io/@shintrfc/projects/ShoppingListTs-RN
