@@ -8,39 +8,46 @@ export type HeaderProps = {
 	deleteHandler: () => void;
 	makeAllFalse: () => void;
 	makeAllTrue: () => void;
+	editingHandler: () => void;
+	isEditing: boolean;
 };
 
 const Header = (props: HeaderProps) => {
-	const { deleteHandler, makeAllFalse, makeAllTrue } = props;
-	const [edit, setEdit] = useState(true);
+	const {
+		deleteHandler,
+		makeAllFalse,
+		makeAllTrue,
+		editingHandler,
+		isEditing,
+	} = props;
+	const [edit, setEdit] = useState(false);
 	const onPress = () => {
-		setEdit(!edit);
-		if (edit === false) {
-			makeAllFalse();
-		} else {
-			makeAllTrue();
-		}
+		// setEdit(!edit);
+		editingHandler();
 	};
 	const addDeleteHandler = () => {
-		onPress();
+		// onPress();
 		deleteHandler();
 	};
 	return (
 		<View style={styles.container}>
 			<TouchableOpacity style={styles.icon} onPress={onPress}>
-				{edit ? (
-					<MaterialIcons
-						name='playlist-add-check'
-						color={Colors.light.secondaryColor}
-						size={30}
-						// style={{ marginHorizontal: 3 }}
-					/>
+				{isEditing ? (
+					// <MaterialIcons
+					// 	name='playlist-add-check'
+					// 	color={Colors.light.secondaryColor}
+					// 	size={30}
+					<Text style={styles.text}>Done</Text>
 				) : (
-					<MaterialIcons
-						name='indeterminate-check-box'
-						color='red'
-						size={30}
-					/>
+					// />
+
+					<Text style={styles.text}>Edit</Text>
+					// <MaterialIcons
+					// 	name='indeterminate-check-box'
+					// 	color='red'
+					// 	size={30}
+					// />
+					// <Text style={styles.text}>選択解除</Text>
 				)}
 			</TouchableOpacity>
 			<Text style={styles.text}>リスト</Text>

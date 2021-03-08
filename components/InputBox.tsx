@@ -35,25 +35,38 @@ const InputBox = (props: InputBoxProps) => {
 			setInput("");
 		}
 	};
+	let textInputref = null;
 	return (
 		<View style={styles.container}>
+			<TouchableOpacity onPress={onPress}>
+				<View
+					style={[
+						styles.buttonContainer,
+						{
+							backgroundColor:
+								input === ""
+									? "gray"
+									: Colors.light.secondaryColor,
+						},
+					]}
+				>
+					{/* <MaterialIcons name='send' size={24} color='white' /> */}
+					<MaterialIcons name='add' size={24} color='white' />
+				</View>
+			</TouchableOpacity>
 			<View style={styles.mainContainer}>
 				<TextInput
 					style={styles.TextInput}
-					multiline
 					onChangeText={setInput}
 					value={input}
 					returnKeyType='next'
-					placeholder={"Type something!"}
-
-					// numberOfLines={2}
+					placeholder={"リストを追加する!"}
+					onSubmitEditing={onPress}
+					blurOnSubmit={false}
+					// onFocus={onPress}
+					autoFocus={true}
 				/>
 			</View>
-			<TouchableOpacity onPress={onPress}>
-				<View style={styles.buttonContainer}>
-					<MaterialIcons name='send' size={24} color='white' />
-				</View>
-			</TouchableOpacity>
 		</View>
 	);
 };
@@ -80,11 +93,11 @@ const styles = StyleSheet.create({
 		backgroundColor: Colors.light.secondaryColor,
 		width: 45,
 		height: 45,
-		borderRadius: 50,
+		borderRadius: 10,
 		justifyContent: "center",
 		alignItems: "center",
 		marginVertical: 10,
-		marginRight: 10,
+		marginLeft: 10,
 	},
 	TextInput: {
 		flex: 1,
